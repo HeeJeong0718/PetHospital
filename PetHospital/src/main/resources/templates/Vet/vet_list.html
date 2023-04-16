@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      >
+<head>
+<meta charset="UTF-8" />
+<title>게시판 - 글쓰기</title>
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+ <script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+</head>
+<body>
+<body>
+	<div class="container">
+	 <div th:replace="fragment/bodyHeader :: bodyHeader" />
+	<form th:action="@{/searchVet}" method="get">
+		  <input type="text" name="keyword" th:value="${keyword}"  placeholder="수의사 이름을 검색하세요" size="50" >
+		  <button type="submit" class="btn btn-info" >Search</button>
+		  <button type="submit" class="btn btn-info" >Reset</button>
+		  </form>
+		<div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>이름</th>
+						<th>상세</th>
+						<th>부서</th>
+						<th>등록일</th>
+						<th>수정일</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item : ${vet}">
+						<td th:text="${item.id}"></td>
+						<td th:text="${item.name}"></td>
+					    <td th:text="${item.description}"></td>
+						<td th:text="${item.departMent.name}"></td>
+						<td th:text="${#temporals.format(item.createDate, 'yyyy-MM-dd HH:mm')}"></td>
+						<td th:text="${#temporals.format(item.modifiedDate,'yyyy-MM-dd HH:mm')}"></td>
+						 <td><a href="#" th:href="@{/web/vet/update/{id} (id=${item.id})}"
+						  class="btn btn-primary" role="button">상세</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!-- /container -->
+</body>
+</html>

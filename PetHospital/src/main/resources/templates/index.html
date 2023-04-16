@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+	 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+  <div class="container">
+	    <div th:replace="fragment/bodyHeader :: bodyHeader" />
+		<div class="jumbotron">
+			<h1>PET HOSPITAL</h1>
+		   <div th:unless="${name}">		
+		 	 <p>
+			  <span th:if="${name}"  th:text="|안녕하세요. ${name}님|"></span>
+				<a  th:unless="${name}" class="btn btn-lg btn-secondary" href="/web/signup">회원가입</a> 
+				<a  th:unless="${name}" class="btn btn-lg btn-secondary" href="/web/login">로그인</a>
+				<a th:if="${name}" class="btn btn-lg btn-secondary" th:href="@{/user/logout}">로그아웃</a>
+			</p>
+			</div>
+		<div th:if="${name}">
+		   <p>
+		     <span th:text="|안녕하세요. ${name}님|"></span>
+		    <a class="btn btn-lg btn-secondary" th:href="@{/web/user/logout}">로그아웃</a>
+		    </p>
+		   	
+			<p class="lead">회원 관리</p>
+			<p>
+				<a class="btn btn-lg btn-secondary" href="/web/members/new">회원등록</a> 
+				<a class="btn btn-lg btn-secondary" href="/web/memberList">회원 목록</a>
+			</p>
+			<p class="lead">펫 관리</p>
+			<p>
+				<a class="btn btn-lg btn-dark" href="/web/pet">펫 등록</a>
+				<a class="btn btn-lg btn-dark" href="/web/search">펫 목록</a> 
+			</p>
+			<p class="lead">의사 관리</p>
+			<p> 
+				<a class="btn btn-lg btn-dark" href="/web/vet">수의사등록</a>
+				<a class="btn btn-lg btn-dark" href="/web/searchVet">수의사목록</a>
+				<a class="btn btn-lg btn-info" href="/web/dep">부서등록</a>
+			</p>
+			<p class="lead">차트 관리</p>
+			<p> 
+				<a class="btn btn-lg btn-info" href="/web/chart">차트등록</a>
+				<a class="btn btn-lg btn-info" href="/web/chartList">차트목록</a>
+			</p>
+			<p> 
+				<a class="btn btn-lg btn-info" href="/web/pre">처방전등록</a>
+				<a class="btn btn-lg btn-info" href="/web/preList">처방전목록</a>
+			</p>
+		</div>
+		</div>
+	</div> 
+	<!-- /container -->
+</body>
+</html>

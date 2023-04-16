@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout>
+<head>
+<meta charset="UTF-8" />
+<title>게시판 - 글쓰기</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<body>
+	<div class="container">
+		<div th:replace="fragment/bodyHeader :: bodyHeader" />
+		<form>
+			<!-- id -->
+			<div class="form-group row">
+				<div class="col-sm-10">
+					<label for="id">id</label> <input type="text" name="id"
+						class="form-control" id="id" th:value="${chart.id}" />
+				</div>
+			</div>
+			<div class="form-group row">
+			 <div class="col-sm-10">
+				<label for="status">현재상태 :<span
+					th:text="${chart.chartStatus}"></span></label> <select class="form-control"
+					name="statusId" id="chartStatus">
+					<option
+						th:each="sta : ${T(com.example.PetHospital.domain.ChartStatus).values()}"
+						th:value="${sta.name()}" th:text="${sta.name()}"></option>
+				</select>
+            </div>
+			</div>
+
+			<div class="form-group row">
+				<div class="col-sm-10">
+					<label for="id">펫이름</label> <input type="text" name="pet"
+						class="form-control" id="pet" th:value="${chart.pet.name}" />
+				</div>
+			</div>
+			<div class="form-group row">
+			<div class="col-sm-10">
+				<label for="vet">현재vet:<span th:text="${chart.vet.name}"></span></label>
+				<select name="vetId" id="vet" class="form-control">
+					<option value="">vet선택</option>
+					<option th:each="vet : ${vet}" th:value="${vet.id}"
+						th:text="${vet.name}" />
+				</select>
+			</div>
+			</div>
+			<button id="btn-save" class="btn btn-primary">수정하기</button>
+			<button id="btn-del" class="btn btn-danger">삭제하기</button>
+			</form>
+	</div>
+
+	
+
+	<script type='text/javascript'>
+'use strict';
+
+let index = {           //파라미터
+  init:function(){    //1.이벤트 2.무엇을할건지적는다
+  	$("#btn-save").on("click", () =>{
+  		this.save() //save 함수를 호출한다
+  	});
+
+  },
+
+  save : function(){
+  	var data = {
+  			vetId : $("#vet").val(),
+  			chartStatus : $("#chartStatus").val()
+  	};
+
+  	var id = $("#id").val();
+ 
+  	
+  	$.ajax({
+  		type : 'PUT',
+  		url : '/v1/chart/update/' + id,
+  		dataType: "json",
+  		contentType : 'application/json; charset=utf-8',
+  		data : JSON.stringify(data)
+  	}).done(function(){
+  		alert("글이 수정되었습니다");
+  		window.location.href = '/web/main';
+  	}).fail(function(error){
+  		alert(JSON.stringfify(error));
+  	});
+  	
+  }
+};
+
+index.init();
+</script>
+
+</body>
+</html>

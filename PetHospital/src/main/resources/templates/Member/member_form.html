@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout=http://www.ultraq.net.nz/thymeleaf/layout
+      >
+<head>
+<meta charset="UTF-8" />
+<title>게시판 - 글쓰기</title>
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+ <script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+</head>
+<body>
+   <div class="container">
+    <div th:replace="fragment/bodyHeader :: bodyHeader" />
+		<h5 class="my-3 border-bottom pb-2">회원등록</h5>
+		<form>
+			<div class="form-group row">
+				<label for="inputTitle" class="col-sm-2 col-form-label"><strong>이름</strong></label>
+				<div class="col-sm-10">
+					<input type="text" name="name" class="form-control" id="name" />
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputContent" class="col-sm-2 col-form-label"><strong>폰번호</strong></label>
+				<div class="col-sm-10">
+					<input type="text" name="phone" class="form-control" id="phone"></textarea>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputContent" class="col-sm-2 col-form-label"><strong>우편번호</strong></label>
+				<div class="col-sm-10">
+					<input type="text" onclick="input_click()" name="zipcode" class="form-control" id="zipcode"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputContent" class="col-sm-2 col-form-label"><strong>도로명주소</strong></label>
+				<div class="col-sm-10">
+					<input type="text" name="street" class="form-control" id="street"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="inputContent" class="col-sm-2 col-form-label"><strong>상세</strong></label>
+				<div class="col-sm-10">
+					<input type="text" name="detailAdr" class="form-control" id="detailAdr"/>
+				</div>
+			</div>
+		</form>
+			<div class="row">
+				<div class="col-auto mr-auto"></div>
+				<div class="col-auto">
+				  <button id="btn-save" class="btn btn-primary">등록하기</button>
+				</div>
+			</div>
+	</div>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script  type='text/javascript'>
+'use strict';
+//회원가입 js -ajax
+let index = {           //파라미터
+  init:function(){    //1.이벤트 2.무엇을할건지적는다
+  	$("#btn-save").on("click", () =>{
+  		this.save() //save 함수를 호출한다
+  	});
+    
+  },
+
+  save : function(){
+  	var data = {
+  			name : $("#name").val(),
+  			phone : $("#phone").val(),
+  			zipcode : $("#zipcode").val(),
+  			street : $("#street").val(),
+  			detailAdr : $("#detailAdr").val()
+  			
+  	};
+  	$.ajax({
+  		type : 'POST',
+  		url : '/v1/member/createMember',
+  		dataType: "json",
+  		contentType : 'application/json; charset=utf-8',
+  		//headers: {"X-AUTH-TOKEN": "accessToken"},
+  		//Cookie: cookie-name=accessToken,
+  		data : JSON.stringify(data)
+  	}).done(function(){
+  		alert("글이 등록되었습니다");
+  		window.location.href = '/web/index';
+  	}).fail(function(error){
+  		alert(JSON.stringify(error));
+  	});
+  	
+  }
+};
+
+index.init();
+
+function input_click () {
+	new daum.Postcode({
+		oncomplete:function(data){
+			var addr = '';
+			var extraAddr = '';
+			if(data.userSelectType =='R'){
+				
+				addr = data.roadAddress;
+				console.log(addr);
+			}else{
+				addr = data.jibunAddress;
+				console.log(addr);
+			}
+			
+			if(data.userSelectType ==='R'){
+			   if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+				   extraAddr += data.bname;
+			   }
+			   if(data.buildingName !== '' && data.apartment === 'Y'){
+				   extraAddr += (extraAddr !== ''? ',' + data.buildingName : data.buildingName);
+			   }
+			   if(extraAddr !== ''){
+				   extraAddr = '(' + extraAddr+ ')';
+			   } 
+			   document.getElementById('detailAdr').value = extraAddr;
+			   
+			}else{
+				document.getElementById('detailAdr').value ='';
+			} 
+		   document.getElementById('zipcode').value = data.zonecode;
+		   document.getElementById('street').value = addr;
+		   document.getElementById('detailAdr').focus();
+		}
+	}).open();
+}
+
+</script>
+</body>
+</html>
